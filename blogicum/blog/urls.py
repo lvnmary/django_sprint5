@@ -15,7 +15,7 @@ urlpatterns = [
         name='post_detail',
     ),
     path(
-        'posts/<slug:category_slug>/',
+        'category/<slug:category_slug>/',
         views.category_posts,
         name='category_posts',
     ),
