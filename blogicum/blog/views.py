@@ -1,7 +1,7 @@
 from django.shortcuts import render
+from django.http import Http404
 
-
-posts = [
+posts: list[dict] = [
     {
         'id': 0,
         'location': 'Остров отчаянья',
@@ -44,27 +44,27 @@ posts = [
     },
 ]
 
+posts_dict = {post['id']: post for post in posts}
+
 
 def index(request):
     """Выводит посты на главную."""
-    template = 'blog/index.html'
-    context = {'posts': posts}
-    return render(request, template, context)
+    return render(request, 'blog/index.html', {'posts': posts})
 
 
-def post_detail(request, id):
+def post_detail(request, post_id):
     """Выводит пост на отдельную страницу."""
-    template = 'blog/detail.html'
-    post = [post for post in posts if post['id'] == id]
-    context = {'post': post[0]}
-    return render(request, template, context)
+    post = posts_dict.get(post_id)
+    if post:
+        return render(request, 'blog/detail.html', {'post': post})
+    else:
+        raise Http404("Пост с данным id не найден")
 
 
 def category_posts(request, category_slug):
     """Выводит страницу категории."""
-    template = 'blog/category.html'
-    sorted_posts = [post for post in posts if post['category']
-                    == category_slug]
-    context = {'category': category_slug,
-               'posts': sorted_posts}
-    return render(request, template, context)
+    grouped_posts = [post for post in posts if post['category']
+                     == category_slug]
+    return render(request, 'blog/category.html',
+                  {'category': category_slug, 'posts': grouped_posts},
+                  )
