@@ -54,11 +54,11 @@ def index(request):
 
 def post_detail(request, post_id):
     """Выводит пост на отдельную страницу."""
-    post = posts_dict.get(post_id)
-    if post:
-        return render(request, 'blog/detail.html', {'post': post})
-    else:
-        raise Http404("Пост с данным id не найден")
+    if post_id in posts_dict:
+        return render(request, 'blog/detail.html',
+                      {'post': posts_dict[post_id]},
+                      )
+    raise Http404("Пост с данным id не найден")
 
 
 def category_posts(request, category_slug):
